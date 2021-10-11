@@ -1,0 +1,7 @@
+src/credentials
+src/.env
+src/db/__pycache__
+src/debug.log
+venv
+.idea
+Dockerfile
