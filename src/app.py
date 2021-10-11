@@ -3,7 +3,8 @@ from flask import Flask, jsonify, request
 from db.db_connect import init_connection_engine
 from db.tables_init import create_tables, delete_tables
 from db.db_crud import start_psql_session, upsert_contact, select_all_contact
-from settings import DB_NAME, DB_HOST
+
+import os
 
 app = Flask(__name__)
 
@@ -20,7 +21,7 @@ def get_db():
             "Status": "OK",
             "Details":
                 [{
-                    "Database": DB_NAME,
+                    "Database": os.environ["DB_NAME"],
                 }]
         }), 200
     else:
@@ -28,7 +29,7 @@ def get_db():
             "Status": "failed",
             "Details":
                 [{
-                    "Database": DB_NAME,
+                    "Database": os.environ["DB_NAME"],
                 }]
         }), 400
 
@@ -89,7 +90,7 @@ def upsert_contact_():
             "Status": "OK",
             "Details":
                 [{
-                    "Database": DB_NAME,
+                    "Database": os.environ["DB_NAME"],
                     "Table": "Contact",
                 }],
             "Count": [response_count]
@@ -99,7 +100,7 @@ def upsert_contact_():
             "Status": "failed",
             "Details":
                 [{
-                    "Database": DB_NAME,
+                    "Database": os.environ["DB_NAME"],
                     "Table": "Contact"
                 }],
             "Count": None
@@ -110,7 +111,7 @@ def upsert_contact_():
             "Warning": "Request body does not contain data",
             "Details":
                 [{
-                    "Database": DB_NAME,
+                    "Database": os.environ["DB_NAME"],
                     "Table": "Contact"
                 }],
             "Count": [response_count]
@@ -126,7 +127,7 @@ def get_contact():
             "Status": "OK",
             "Details":
                 [{
-                    "Database": DB_NAME,
+                    "Database": os.environ["DB_NAME"],
                     "Table": "Contact",
                     "Result": data
                 }],
@@ -137,7 +138,7 @@ def get_contact():
             "Status": "failed",
             "Details":
                 [{
-                    "Database": DB_NAME,
+                    "Database": os.environ["DB_NAME"],
                     "Table": "Contact",
                     "Result": []
                 }],
