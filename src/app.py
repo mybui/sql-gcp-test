@@ -135,15 +135,15 @@ def get_contact():
         }), 200
     else:
         return jsonify({
-            "Status": "failed",
+            "Status": "OK",
             "Details":
                 [{
                     "Database": os.environ["DB_NAME"],
                     "Table": "Contact",
                     "Result": []
                 }],
-            "Count": None
-        }), 400
+            "Count": 0
+        }), 200
 
 
 if __name__ == "__main__":
