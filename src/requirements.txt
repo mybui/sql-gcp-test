@@ -6,6 +6,7 @@ click==8.0.1
 Flask==2.0.1
 google-api-core==2.1.0
 google-auth==2.3.0
+google-cloud==0.34.0
 google-cloud-appengine-logging==0.1.5
 google-cloud-audit-log==0.1.1
 google-cloud-core==2.1.0
@@ -40,4 +41,3 @@ typing-extensions==3.10.0.2
 urllib3==1.26.7
 Werkzeug==2.0.1
 zipp==3.6.0
-google-python-cloud-debugger==2.18

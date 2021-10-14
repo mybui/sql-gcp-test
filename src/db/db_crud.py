@@ -1,11 +1,13 @@
+import logging
 import google.cloud.logging
+from google.cloud.logging_v2.handlers import CloudLoggingHandler
 
 client = google.cloud.logging.Client()
-client.get_default_handler()
-client.setup_logging()
+handler = CloudLoggingHandler(client)
+google.cloud.logging.handlers.setup_logging(handler)
+logging.getLogger().setLevel(logging.DEBUG)
 
 from contextlib import contextmanager
-from datetime import datetime
 
 from sqlalchemy.orm import Session
 from sqlalchemy.sql import select
@@ -15,11 +17,6 @@ from .tables_init import *
 import pandas
 import json
 
-import logging
-
-
-# CRUD operations demo for table Contact
-# other follow the same procedure
 
 @contextmanager
 def start_psql_session():
@@ -38,7 +35,7 @@ def create_query(session_, purpose, type):
     try:
         if purpose == "sort_upsert_data":
             if type == "contact":
-                query = session_.query(Contact.C_SFDCContactID)
+                query = session_.query(Contact.ContactID)
                 return query
         if purpose == "select_all_data":
             if type == "contact":
@@ -56,8 +53,7 @@ def sort_upsert_data(session_, type, data):
         ids = [entry_["ContactID"] for entry_ in data]
         existing_data = None
         if type == "contact":
-            existing_data = create_query(session_=session_, purpose="sort_upsert_data", type=type).filter(
-                Contact.C_SFDCContactID.in_(ids)).all()
+            existing_data = create_query(session_=session_, purpose="sort_upsert_data", type=type).filter(Contact.ContactID.in_(ids)).all()
         for entry in existing_data:
             ids_to_update.append(entry[0])
         result["entries_to_update"] = [entry for entry in data if entry["ContactID"] in ids_to_update]
@@ -83,7 +79,7 @@ def upsert_contact(session_, data):
                                     Company=contacts_to_update[i].get("Company", None),
                                     City=contacts_to_update[i].get("City", None) or None,
                                     Country=contacts_to_update[i].get("Country", None) or None,
-                                    Email=contacts_to_update[i].get("Email", None) or None,
+                                    EmailAddress=contacts_to_update[i].get("EmailAddress", None) or None,
                                     FirstName=contacts_to_update[i].get("FirstName", None) or None,
                                     LastName=contacts_to_update[i].get("LastName", None) or None,
                                     Title=contacts_to_update[i].get("Title", None) or None,
@@ -106,7 +102,7 @@ def upsert_contact(session_, data):
                                 Company=contacts_to_insert[i].get("Company", None) or None,
                                 City=contacts_to_insert[i].get("City", None) or None,
                                 Country=contacts_to_insert[i].get("Country", None) or None,
-                                Email=contacts_to_insert[i].get("Email", None) or None,
+                                EmailAddress=contacts_to_insert[i].get("EmailAddress", None) or None,
                                 FirstName=contacts_to_insert[i].get("FirstName", None) or None,
                                 LastName=contacts_to_insert[i].get("LastName", None) or None,
                                 Title=contacts_to_insert[i].get("Title", None) or None,

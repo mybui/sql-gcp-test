@@ -1,15 +1,18 @@
+import logging
 import google.cloud.logging
+from google.cloud.logging_v2.handlers import CloudLoggingHandler
 
 client = google.cloud.logging.Client()
-client.get_default_handler()
-client.setup_logging()
+handler = CloudLoggingHandler(client)
+google.cloud.logging.handlers.setup_logging(handler)
+logging.getLogger().setLevel(logging.DEBUG)
 
-from sqlalchemy import Column, String, DateTime, Integer, text
+from sqlalchemy import Column, String, DateTime, Integer
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.sql import func
 
 from .db_connect import init_connection_engine
 
-import logging
 
 db = init_connection_engine()
 Base = declarative_base()
@@ -27,8 +30,7 @@ class Contact(Base):
     LastName = Column(String(100))
     Title = Column(String(100))
     MobilePhone = Column(String(100))
-    TimeLastUpdatedInUTC = Column(DateTime(timezone=True),
-                                  server_default=text("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"))
+    LastModifiedUTC = Column(DateTime(timezone=True), default=func.now())
 
     def __repr__(self):
         return "<Contact(ContactID='%s')>" % self.ContactID
