@@ -79,7 +79,7 @@ def upsert_contact(session_, data):
                         Contact.__table__.update()
                             .values
                                 (
-                                    ContactUUID=contacts_to_update[i].get("ContactUUID", None) or None,
+                                    ContactID=contacts_to_update[i].get("ContactID", None) or None,
                                     Company=contacts_to_update[i].get("Company", None),
                                     City=contacts_to_update[i].get("City", None) or None,
                                     Country=contacts_to_update[i].get("Country", None) or None,
@@ -88,9 +88,8 @@ def upsert_contact(session_, data):
                                     LastName=contacts_to_update[i].get("LastName", None) or None,
                                     Title=contacts_to_update[i].get("Title", None) or None,
                                     MobilePhone=contacts_to_update[i].get("MobilePhone", None) or None,
-                                    TimeInsertedUTC=datetime.utcnow()
                                 )
-                            .where(Contact.C_SFDCContactID == contacts_to_update[i]["ContactID"])
+                            .where(Contact.ContactID == contacts_to_update[i]["ContactID"])
                     )
                 update_check = True
                 no_contacts_to_update = len(contacts_to_update)
@@ -103,7 +102,7 @@ def upsert_contact(session_, data):
                     [
                         dict
                             (
-                                ContactUUID=contacts_to_insert[i].get("ContactUUID", None) or None,
+                                ContactID=contacts_to_insert[i].get("ContactID", None) or None,
                                 Company=contacts_to_insert[i].get("Company", None) or None,
                                 City=contacts_to_insert[i].get("City", None) or None,
                                 Country=contacts_to_insert[i].get("Country", None) or None,
@@ -112,7 +111,6 @@ def upsert_contact(session_, data):
                                 LastName=contacts_to_insert[i].get("LastName", None) or None,
                                 Title=contacts_to_insert[i].get("Title", None) or None,
                                 MobilePhone=contacts_to_insert[i].get("MobilePhone", None) or None,
-                                TimeInsertedUTC=datetime.utcnow()
                             )
                         for i in range(0, len(contacts_to_insert))
                     ]
